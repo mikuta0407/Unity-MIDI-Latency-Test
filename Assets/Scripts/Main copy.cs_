@@ -1,0 +1,55 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+
+public class Main : MonoBehaviour {
+
+    int i;
+    int time = 0;
+
+    float[] keyarray = new float[128];
+    bool[] keyboolarray = new bool[128];
+
+    void Start () {
+        MidiBridge.instance.Warmup();
+        Debug.Log("started");
+        MidiOut.SendProgramChange(MidiChannel.Ch1, 1, 0);
+    }
+
+    void Update () {
+        /*if (Input.GetKeyDown(KeyCode.A))
+        {
+            // source select A-1
+            MidiOut.SendControlChange(MidiChannel.Ch1, 0, 0);
+            MidiOut.SendControlChange(MidiChannel.Ch1, 32, 0);
+            MidiOut.SendProgramChange(MidiChannel.Ch1, 0, 0);
+        }*/
+
+        for(i= 0; i<=127; i++){
+            keyarray[i] = MidiInput.GetKey(MidiChannel.Ch1, i);
+            //押されてるとき
+            if (keyarray[i] != 0){
+                if (keyboolarray[i] == false){ //押された瞬間
+                    //Debug.Log("key on:" + (i+48));
+                    keyboolarray[i] = true;
+                    //MidiOut.SendNoteOn(MidiChannel.Ch2, i, 110);
+                    MidiOut.SendNoteOn(MidiChannel.Ch2, i, keyarray[i]);
+                }
+            } else { //0のとき
+                //離した時
+                if (keyboolarray[i] == true){
+                    Debug.Log("key off:" + (i+48));
+                    keyboolarray[i] = false;
+                    MidiOut.SendNoteOff(MidiChannel.Ch2, i);
+                }
+
+            }
+            
+        }
+        time++;
+
+        //Debug.Log("time:" + time);
+
+    }
+}
