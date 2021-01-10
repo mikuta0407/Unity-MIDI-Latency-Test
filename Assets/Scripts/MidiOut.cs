@@ -21,9 +21,11 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using UnityEngine;
+using Photon.Pun;
 
 public static class MidiOut
 {
+    [PunRPC]
     public static void SendNoteOn(MidiChannel channel, int noteNumber, float velocity)
     {
         int cn = Mathf.Clamp ((int)channel, 0, 15);
@@ -32,6 +34,7 @@ public static class MidiOut
         MidiBridge.instance.Send (0x90 + cn, noteNumber, (int)velocity);
     }
 
+    [PunRPC]
     public static void SendNoteOff(MidiChannel channel, int noteNumber)
     {
         int cn = Mathf.Clamp ((int)channel, 0, 15);
